@@ -1,79 +1,75 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { FC } from "react";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
-interface CursorMaskProps {
-  shape?: "circle" | "square" | "star";
+export interface Spread {
+  title: string;
+  // add any other fields your spreads have, e.g. `pageNumber`, `thumbnail`, etc.
 }
 
-export default function CursorMask({ shape = "circle" }: CursorMaskProps) {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isVisible, setIsVisible] = useState(false);
+interface TableOfContentsProps {
+  spreads: Spread[];
+  onClose: () => void;
+  onSelectSpread: (index: number) => void;
+}
 
-  useEffect(() => {
-    const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-      if (!isVisible) setIsVisible(true);
-    };
+const backdrop = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
 
-    window.addEventListener("mousemove", updateMousePosition);
+const panel = {
+  hidden: { x: "100%" },
+  visible: { x: 0 },
+};
 
-    // Hide cursor mask when mouse leaves window
-    const handleMouseLeave = () => setIsVisible(false);
-    window.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      window.removeEventListener("mousemove", updateMousePosition);
-      window.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, [isVisible]);
-
-  const getShapePath = () => {
-    switch (shape) {
-      case "square":
-        return "M-50,-50 L50,-50 L50,50 L-50,50 Z";
-      case "star":
-        return "M0,-50 L13.8,-15.5 L50,-15.5 L19.1,5.9 L30.9,40.5 L0,20 L-30.9,40.5 L-19.1,5.9 L-50,-15.5 L-13.8,-15.5 Z";
-      case "circle":
-      default:
-        return "";
-    }
-  };
-
+const TableOfContents: FC<TableOfContentsProps> = ({
+  spreads,
+  onClose,
+  onSelectSpread,
+}) => {
   return (
     <motion.div
-      className="fixed inset-0 pointer-events-none z-50"
-      animate={{ opacity: isVisible ? 1 : 0 }}
-      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-30 bg-black bg-opacity-50 flex justify-end"
+      variants={backdrop}
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+      onClick={onClose}
     >
-      <svg width="100%" height="100%" className="absolute inset-0">
-        <defs>
-          <mask id="cursor-mask">
-            <rect width="100%" height="100%" fill="white" />
-            {shape === "circle" ? (
-              <circle
-                cx={mousePosition.x}
-                cy={mousePosition.y}
-                r="100"
-                fill="black"
-              />
-            ) : (
-              <path
-                d={getShapePath()}
-                transform={`translate(${mousePosition.x}, ${mousePosition.y})`}
-                fill="black"
-              />
-            )}
-          </mask>
-        </defs>
-        <rect
-          width="100%"
-          height="100%"
-          fill="rgba(0, 0, 0, 0.15)"
-          mask="url(#cursor-mask)"
-        />
-      </svg>
+      <motion.div
+        className="w-80 bg-white h-full p-6 shadow-lg"
+        variants={panel}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        transition={{ type: "tween", duration: 0.3 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 className="text-2xl font-semibold mb-4">Table of Contents</h2>
+        <ul className="space-y-2 overflow-y-auto max-h-full">
+          {spreads.map((spread, idx) => (
+            <li key={idx}>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => onSelectSpread(idx)}
+              >
+                {spread.title || `Spread ${idx + 1}`}
+              </Button>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-6 text-right">
+          <Button variant="outline" onClick={onClose}>
+            Close
+          </Button>
+        </div>
+      </motion.div>
     </motion.div>
   );
-}
+};
+
+export default TableOfContents;
