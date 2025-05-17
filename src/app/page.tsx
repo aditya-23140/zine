@@ -205,7 +205,7 @@ export default function Home() {
             <div className="flex justify-center gap-4">
               <Button
                 className="bg-[#ec4e39] hover:bg-[#d43d29] text-white"
-                onClick={() => scrollToSpread(1)}
+                onClick={() => scrollToSpread(0)}
               >
                 Start Reading
               </Button>

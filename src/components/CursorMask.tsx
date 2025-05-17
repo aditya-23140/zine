@@ -32,7 +32,7 @@ export default function CursorMask({ shape = "circle" }: CursorMaskProps) {
   const getShapePath = () => {
     switch (shape) {
       case "square":
-        return "M-50,-50 L50,-50 L50,50 L-50,50 Z";
+        return "M-20,-20 L20,-20 L20,20 L-20,20 Z";
       case "star":
         return "M0,-50 L13.8,-15.5 L50,-15.5 L19.1,5.9 L30.9,40.5 L0,20 L-30.9,40.5 L-19.1,5.9 L-50,-15.5 L-13.8,-15.5 Z";
       case "circle":
@@ -55,7 +55,7 @@ export default function CursorMask({ shape = "circle" }: CursorMaskProps) {
               <circle
                 cx={mousePosition.x}
                 cy={mousePosition.y}
-                r="100"
+                r="20"
                 fill="black"
               />
             ) : (

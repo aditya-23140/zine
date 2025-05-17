@@ -57,7 +57,7 @@ const TableOfContents: FC<TableOfContentsProps> = ({
                 className="w-full justify-start"
                 onClick={() => onSelectSpread(idx)}
               >
-                {spread.title || `Spread ${idx + 1}`}
+                {spread.title || `Spread ${idx}`}
               </Button>
             </li>
           ))}

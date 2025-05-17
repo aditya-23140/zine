@@ -35,7 +35,10 @@ export default function ZineSpread({
   // For regular sections, use the standard opacity transform
   const regularOpacity = useTransform(
     scrollYProgress,
-    [start + 0.05, start + 0.2],
+    [
+      Math.max(0, start - 0.05), // Start earlier
+      Math.min(1, start + 0.15), // Complete faster
+    ],
     [0, 1]
   );
 
@@ -45,8 +48,8 @@ export default function ZineSpread({
     // Adjust the timing to ensure they complete properly
     // Start earlier and complete faster
     [
-      Math.max(0, start - 0.05), // Start earlier
-      Math.min(1, start + 0.15), // Complete faster
+      Math.max(0, start - 0.15), // Start earlier
+      Math.min(1, start + 0.05), // Complete faster
     ],
     [0, 1]
   );
@@ -104,7 +107,7 @@ export default function ZineSpread({
               {/* Front side */}
               <motion.div
                 className={cn(
-                  "bg-white bg-opacity-90 backdrop-blur p-8 shadow-2xl rounded-xl backface-hidden",
+                  "bg-white bg-opacity-90 backdrop-blur p-8 shadow-2xl rounded-xl backface-hidden text-white",
                   flipped && "invisible"
                 )}
                 initial={{ x: -200, opacity: 0 }}
@@ -128,6 +131,7 @@ export default function ZineSpread({
                   {spread.hasInteractiveElement && (
                     <Button
                       variant="outline"
+                      className="text-black"
                       onClick={() => spread.interactiveAction?.()}
                     >
                       {spread.interactiveButtonText}
